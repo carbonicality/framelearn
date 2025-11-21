@@ -7,4 +7,56 @@
         <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="./styles.css">
     </head>
+    <body>
+        <div class="grid-bg"></div>
+        <div class="container">
+            <header>
+                <h1>framelearn (a better name is framebuild so let's go with that)</h1>
+                <p class="subtitle">a modular framework laptop builder</p>
+            </header>
+            <div class="mgrid">
+                <div class="disp-area">
+                    <div class="bracket tl"></div>
+                    <div class="bracket tr"></div>
+                    <div class="bracket bl"></div>
+                    <div class="bracket br"></div>
+                    <!-- <div class="scan-line"></div> for some reason its positioned weird: fix this later -->
+
+                    <div class="laptop">
+                        <div class="b-laptop">
+                            <div class="screen">[DISPLAY]</div>
+                            <div class="ports left">
+                                <div class="port-slot" data-slot="L1">
+                                    <span class="comp-lb">SLOT_L1</span>
+                                </div>
+                                <div class="port-slot" data-slot="L2">
+                                    <span class="comp-lb">SLOT_L2</span>
+                                </div>
+                                <div clsas="port-slot" data-slot="L3">
+                                    <span class="comp-lb">SLOT_L3</span>
+                                </div>
+                                <div class="port-slot" data-slot="L4">
+                                    <span class="comp-lb">SLOT_L4</span>
+                                </div>
+                            </div>
+                            <div class="ports right">
+                                <div class="port-slot" data-slot="R1">
+                                    <span class="comp-lb">SLOT_R1</span>
+                                </div>
+                                <div class="port-slot" data-slot="R2">
+                                    <span class="comp-lb">SLOT_R2</span>
+                                </div>
+                                <div class="port-slot" data-slot="R3">
+                                    <span class="comp-lb">SLOT_R3</span>
+                                </div>
+                                <div class="port-slot" data-slot="R4">
+                                    <span class="comp-lb">SLOT_R4</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>
