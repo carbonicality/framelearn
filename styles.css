@@ -1,0 +1,361 @@
+/* the framelearn authors, 2025 */
+/* looking back on this i have no idea why i named it framelearn, it would be better with sm like framebuild but theres no turning back now ig */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Geist Mono';
+    background: #0a0a0a;
+    color: #e0e0e0;
+    overflow-x: hidden;
+}
+
+.grid-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.container {
+    position: relative;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    z-index: 1;
+}
+
+header {
+    margin-bottom: 40px;
+    border-left: 3px solid #00ffff;
+    padding-left: 20px;
+}
+
+h1 {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+    color: #00ffff;
+}
+
+.subtitle {
+    font-size: 13px;
+    color: #888;
+    letter-spacing: 0.5px;
+}
+
+.mgrid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.disp-area {
+    background: rgba(20, 20, 20, 0.6);
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 60px 40px;
+    position: relative;
+}
+
+.disp-area::before {
+    content: 'MAIN_DISPLAY';
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    font-size: 10px;
+    color: #555;
+    letter-spacing: 1px;
+}
+
+.laptop {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.b-laptop {
+    width: 100%;
+    height: 400px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+    border: 2px solid #333;
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.b-laptop::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    border: 1px solid #222;
+    border-radius: 4px;
+}
+
+.screen {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    right: 30px;
+    height: 240px;
+    background: #000;
+    border: 1px solid #444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #00ffff;
+    letter-spacing: 2px;
+}
+
+.ports {
+    position: absolute;
+    display: flex;
+    gap: 8px;
+}
+
+.ports.left {
+    left: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    flex-direction: column;
+}
+
+.ports.right {
+    right: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    flex-direction: column;
+}
+
+.port-slot {
+    width: 60px;
+    height: 40px;
+    background: #0a0a0a;
+    border: 2px solid #333;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    color: #555;
+}
+
+.port-slot:hover {
+    border-color: #00ffff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.port-slot.occupied {
+    background: linear-gradient(135deg, #1a3a3a 0%, #0a1a1a 100%);
+    border-color: #00ffff;
+    color: #00ffff;
+}
+
+.port-slot.occupied::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #00ff00;
+    border-radius: 50%;
+    top: 4px;
+    right: 4px;
+    box-shadow: 0 0 5px #00ff00;
+}
+
+.comp-lb {
+    font-size: 8px;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.ctrl-pnl {
+    background: rgba(20, 20, 20, 0.6);
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 20px;
+    position: relative;
+}
+
+.ctrl-pnl::before {
+    content: 'I/O SELECTION';
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    font-size: 10px;
+    color: #555;
+    letter-spacing: 1px;
+}
+
+.pnl-section {
+    margin-top: 40px;
+    margin-bottom: 30px;
+}
+
+.pnl-section h3 {
+    font-size: 12px;
+    color: #00ffff;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.comp-gd {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.comp-card {
+    background: #0f0f0f;
+    border: 1px solid #333;
+    padding: 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.comp-card:hover {
+    border-color: #00ffff;
+    background: #1a1a1a;
+}
+
+.comp-card.selected {
+    border-color: #00ffff;
+    background: #1a2a2a;
+}
+
+.comp-name {
+    font-size: 11px;
+    color: #e0e0e0;
+    margin-bottom: 6px;
+}
+
+.comp-specs {
+    font-size: 9px;
+    color: #666;
+    line-height: 1.4;
+}
+
+.stats-pnl {
+    background: rgba(20, 20, 20, 0.6);
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 20px;
+    position: relative;
+}
+
+.stats-pnl::before {
+    content: 'SYS_SPECS';
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    font-size: 10px;
+    color: #555;
+    letter-spacing: 1px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 30px 0 15px 0;
+    font-size: 11px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #222;
+}
+
+.stat-lb {
+    color: #888;
+}
+
+.stat-val {
+    color: #00ffff;
+    font-weight: 500;
+}
+
+.warning {
+    color: #ffaa00;
+}
+
+.error {
+    color: #ff4444;
+}
+
+.scan-line {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.3), transparent);
+    animation: scan 3s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes scan {
+    0% {
+        top: 0;
+    }
+
+    100% {
+        top: 100%
+    }
+}
+
+.bracket {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #00ffff;
+}
+
+.bracket.tl {
+    top: -1px;
+    left: -1px;
+    border-right: none;
+    border-bottom: none;
+}
+
+.bracket.tr {
+    top: -1px;
+    right: -1px;
+    border-left: none;
+    border-bottom: none;
+}
+
+.bracket.bl {
+    bottom: -1px;
+    left: -1px;
+    border-right: none;
+    border-top: none;
+}
+
+.bracket.br {
+    bottom: -1px;
+    right: -1px;
+    border-left: none;
+    border-top: none;
+}
+
+/* isnt this such a tuff way of doing it */
+@media (max-width: 1024px) {
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
+}
