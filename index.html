@@ -130,6 +130,88 @@
                         </div>
                     </div>
                 </div>
+                <div class="ctrl-pnl" style="margin-top: 20px;">
+                    <div class="pnl-section">
+                        <h3>memory configuration</h3>
+                        <div class="comp-gd">
+                            <div class="comp-card ram-card" data-ram="0">
+                                <div class="comp-name">0GB DDR0</div>
+                                <div class="comp-specs">
+                                    SPEED: 0MHz<br>
+                                    BW: 0GB/s<br>
+                                    PWR: 0W<br>
+                                    COST: $0
+                                </div>
+                            </div>
+                            <div class="comp-card ram-card" data-ram="1">
+                                <div class="comp-name">1GB DDR1</div>
+                                <div class="comp-specs">
+                                    SPEED: 0MHz<br>
+                                    BW: 0MHz<br>
+                                    PWR: 0W<br>
+                                    COST: $0
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pnl-section">
+                        <h3>storage configuration</h3>
+                        <div class="comp-gd">
+                            <div class="comp-card storage-card" data-storage="0">
+                                <div class="comp-name">0GB</div>
+                                <div class="comp-specs">
+                                    READ: 0MB/s<br>
+                                    WRITE: 0MB/s<br>
+                                    PWR: 0W<br>
+                                    COST: $0
+                                </div>
+                            </div>
+                            <div class="comp-card storage-card" data-storage="1">
+                                <div class="comp-name">1GB</div>
+                                <div class="comp-specs">
+                                    READ: 0MB/s<br>
+                                    WRITE: 0MB/s<br>
+                                    PWR: 0W<br>
+                                    COST: $0
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pnl-section">
+                        <h3>battery configuration</h3>
+                        <div class="comp-gd" style="grid-template-columns:1fr 1fr 1fr;">
+                            <div class="comp-card battery-card" data-battery="0">
+                                <div class="comp-name">0Wh</div>
+                                <div class="comp-specs">
+                                    CELLS: 0<br>
+                                    WEIGHT: 0g<br>
+                                    COST: $0
+                                </div>
+                            </div>
+                            <div class="comp-card battery-card" data-battery="1">
+                                <div class="comp-name">1Wh</div>
+                                <div class="comp-specs">
+                                    CELLS: 1<br>
+                                    WEIGHT: 1g<br>
+                                    COST: $1<br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pnl-section">
+                        <h3>power adapter</h3>
+                        <div class="comp-gd" style="grid-template-columns: 1fr 1fr 1fr;">
+                            <div class="comp-card adapter-card" data-adapter="0">
+                                <div class="comp-name">the adapter</div>
+                                <div class="comp-specs">
+                                    OUTPUT: idk<br>
+                                    WEIGHT: idk<br>
+                                    COST: $10<br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="stats-pnl" style="margin-top: 20px;">
                     <div class="stat-row">
                         <span class="stat-lb">total power draw:</span>
@@ -161,6 +243,59 @@
                         <span class="stat-lb">cpu tdp</span>
                         <span class="stat-val" id="cpu-tdp">0W</span>
                     </div>
+                    <div class="stat-row">
+                        <span class="stat-tb">memory</span>
+                        <span class="stat-val" id="ram-size">not selected</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-lb">storage</span>
+                        <span class="stat-val" id="storage-size">not selected</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-lb">battery capacity</span>
+                        <span class="stat-val" id="battery-cap">not selected</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-lb">power adapter</span>
+                        <span class="stat-val" id="adapter-watt">not selected</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-lb">total cost</span>
+                        <span class="stat-val" id="total-cost">$0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-lb">compatibility</span>
+                        <span class="stat-val" id="compat-score">100%</span>
+                    </div>
+                </div>
+                <div class="ctrl-pnl" style="margin-top: 20px;">
+                    <div class="pnl-section">
+                        <h3>configuration management</h3>
+                        <div class="display: flex; flex-direction: column; gap: 10px;">
+                            <button class="action-btn" id="export-btn">export config</button>
+                            <button class="action-btn" id="import-btn">import config</button>
+                            <button class="action-btn" id="copy-btn">copy config to clipboard</button>
+                            <button class="action-btn" id="sum-btn">view summary</button>
+                            <input type="file" id="import-file" accept=".json" style="display: none;">
+                        </div>
+                    </div>
+                    <div class="pnl-section">
+                        <h3>preset configs</h3> <!-- omg hyprland config file!!!!!!!-->
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <button class="action-btn preset-btn" data-preset="dev">dev config (for the haxors frfr)</button>
+                            <button class="action-btn preset-btn" data-preset="game">gaming config (hl3 approved)</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="conf-sum" class="conf-sum">
+                    <div class="sum-content">
+                        <span class="sum-close">&times;</span>
+                        <h2 id="sum-title">config summary</h2>
+                        <div id="sum-body"></div>
+                    </div>
+                </div>
+                <div id="thermals" class="thermals">
+                    <canvas id="tcanvas"></canvas> <!-- or tmoble?!?!?! (cough cough)-->
                 </div>
             </div>
         </div>
