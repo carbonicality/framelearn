@@ -59,6 +59,54 @@
                 <div>
                     <div class="ctrl-pnl">
                         <div class="pnl-section">
+                            <h3>display config</h3>
+                            <div class="comp-gd">
+                                <div class="comp-card display-card" data-display="13">
+                                    <div class="comp-name">13.5" display</div>
+                                    <div class="comp-specs">
+                                        RES: 0x0<br>
+                                        RATIO: 0:0<br>
+                                        REFRESH: 0Hz<br>
+                                        PWR: 0W
+                                    </div>
+                                </div>
+                                <div class="comp-card display-card" data-display="16">
+                                    <div class="comp-name">16" display</div>
+                                    <div class="comp-specs">
+                                        RES: 0x0<br>
+                                        RATIO: 0:0<br>
+                                        REFRESH: 0Hz<br>
+                                        PWR: 0W
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pnl-section">
+                            <h3>processor unit</h3>
+                            <div class="comp-gd" style="grid-template-columns: 1fr;">
+                                <div class="comp-card cpu-card" data-cpu="1">
+                                    <div class="comp-name">cpu 1</div>
+                                    <div class="comp-specs">
+                                        CORES: 0<br>
+                                        THREADS: 0<br>
+                                        BOOST: 0GHz<br>
+                                        TDP: idk bro
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="comp-gd" style="grid-template-columns: 1fr;">
+                                <div class="comp-card cpu-card" data-cpu="2">
+                                    <div class="comp-name">cpu 2</div>
+                                    <div class="comp-specs">
+                                        CORES: 0<br>
+                                        THREADS: 0<br>
+                                        BOOST: 0GHz<br>
+                                        TDP: idk bro x2
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pnl-section">
                             <h3>expansion cards</h3>
                             <div class="comp-gd">
                                 <div class="comp-card" data-component="usbc">
@@ -100,7 +148,22 @@
                         <span class="stat-val" id="status">idle</span>
                     </div>
                 </div>
+                <div class="stats-pnl" style="margin-top: 20px;">
+                    <div class="stat-row">
+                        <span class="stat-lb">display size</span>
+                        <span class="stat-val" id="display-size">not selected</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-lb">processor</span>
+                        <span class="stat-val" id="cpu-model">not selected</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-lb">cpu tdp</span>
+                        <span class="stat-val" id="cpu-tdp">0W</span>
+                    </div>
+                </div>
             </div>
         </div>
+        <script src="./script.js"></script>
     </body>
 </html>
