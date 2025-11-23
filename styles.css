@@ -479,3 +479,75 @@ h1 {
     display: inline-block;
     margin-left: 8px;
 }
+
+.pg-cont {
+    margin-top: 30px;
+    background: rgba(20,20,20,0.6);
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 20px;
+    position: relative;
+}
+
+.pg-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #222;
+}
+
+.gtitle {
+    font-size: 10px;
+    color: #555;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.gcurrent {
+    font-size: 16px;
+    color: #00ffff;
+    font-weight: 600;
+}
+
+#pgraph {
+    width: 100%;
+    height: 150px;
+    background: #000;
+    border: 1px solid #333;
+    border-radius: 2px;
+}
+
+.pg-legend {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+    font-size: 9px;
+}
+
+.legitem {
+    display: flex;
+    align-items: center;
+    color: #888;
+}
+
+.legitem::before {
+    content: '';
+    width: 12px;
+    height: 3px;
+    margin-right: 5px;
+    display: inline-block;
+}
+
+.legitem.safe::before {
+    background: #00ff00;
+}
+
+.legitem.moderate::before {
+    background: #ffaa00;
+}
+
+.legitem.high::before {
+    background: #ff4444;
+}

@@ -25,7 +25,7 @@ const storages = {
 }
 
 const batts = {
-    '0': {opacity:55,cells:4,weight:240,cost:80},
+    '0': {capacity:55,cells:4,weight:240,cost:80},
     '1': {capacity:61,cells:4,weight:280,cost:100}
 }
 
@@ -82,6 +82,7 @@ document.querySelectorAll('.battery-card').forEach(card => {
         document.querySelectorAll('.battery-card').forEach(c => c.classList.remove('selected'));
         this.classList.add('selected');
         selBatt = this.dataset.battery;
+        const battery = batts[selBatt];
         document.getElementById('battery-cap').textContent = battery.capacity + 'Wh';
         updStats();
         updStatus('battery configured');
@@ -190,19 +191,24 @@ document.querySelectorAll('.preset-btn').forEach(btn => {
 });
 
 document.getElementById('export-btn').addEventListener('click', function() {
-    const configData = {
+    const cfgData = {
         display: selDisplay,
         cpu: selCpu,
-        ram: selRam,
+        ram:selRam,
         storage: selStorage,
-        battery: selBatt,
+        battery:selBatt,
         adapter: selAdpr,
-        ports: config
+        ports:config
     };
-    const configStr = JSON.stringify(configData);
-    navigator.clipboard.writeText(configStr).then(() => {
-        updStatus('configuration copied to the clipboard');
-    });
+    const dataStr = JSON.stringify(cfgData, null,2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'framelearn-config.json';
+    link.click();
+    URL.revokeObjectURL(url);
+    updStatus('config exported');
 });
 
 document.getElementById('sum-btn').addEventListener('click', function() {
@@ -216,7 +222,7 @@ function showSum() {
     let html = '';
     if (selDisplay) {
         const d= displays[selDisplay];
-        html += `<div class="sum-item"><span>display: </span></span>${d.size} - ${d.cost}</span></div>`;
+        html += `<div class="sum-item"><span>display:</span><span>${d.size} - $${d.cost}</span></div>`;
         totalCost += d.cost;
     }
     if (selCpu) {
@@ -236,12 +242,12 @@ function showSum() {
     }
     if (selBatt) {
         const b = batts[selBatt];
-        html += `<div class="sum-item"><span>battery:</span><span>${b.size} - ${b.cost}</span></div>`;
+        html += `<div class="sum-item"><span>battery:</span><span>${b.capacity}Wh - $${b.cost}</span></div>`;
         totalCost += b.cost;
     }
     if (selAdpr) {
         const a = adapters[selAdpr];
-        html += `<div class="sum-item"><span>adapter:</span><span>${a.size} - ${a.cost}</span></div>`;
+        html += `<div class="sum-item"><span>adapter:</span><span>${a.wattage}W - ${a.cost}</span></div>`;
         totalCost += a.cost;
     }
     for (let slot in config) {
@@ -250,7 +256,7 @@ function showSum() {
         totalCost += comp.cost;
     }
     html += `<div class="sum-item"><span>total:</span></span>$${totalCost}</span></div>`;
-    sumBody.innerHTML - html; // lmao this is still so funny to me for no reason lol
+    sumBody.innerHTML = html; // lmao this is still so funny to me for no reason lol
     sumMdl.style.display = 'block';
 }
 
@@ -352,7 +358,7 @@ function loadPreset(presetName) {
         document.querySelector(`.cpu-card[data-cpu="${preset.cpu}"]`).click();
     }
     if (preset.ram) {
-        document.querySelector(`.ram-card[data-ram="${preset.ram}`).click();
+        document.querySelector(`.ram-card[data-ram="${preset.ram}"]`).click();
     }
     if (preset.storage) {
         document.querySelector(`.storage-card[data-storage="${preset.storage}"]`).click();
@@ -363,7 +369,7 @@ function loadPreset(presetName) {
     if (preset.adapter) {
         document.querySelector(`.adapter-card[data-adapter="${preset.adapter}"]`).click();
     }
-    for (let slot in preset.slots) {
+    for (let slot in preset.ports) {
         config[slot] = preset.ports[slot];
         const slotEl = document.querySelector(`.port-slot[data-slot="${slot}"]`);
         slotEl.classList.add('occupied');
@@ -372,6 +378,53 @@ function loadPreset(presetName) {
     updStats();
     updStatus(`preset loaded: ${presetName}`);
 }
+
+document.getElementById('import-btn').addEventListener('click', function() {
+    document.getElementById('import-file').click();
+});
+
+document.getElementById('import-file').addEventListener('change', function(e) {
+    const file= e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const cfgData = JSON.parse(e.target.result);
+                clearCfg();
+                if (cfgData.display) {
+                    document.querySelector(`.display-card[data-display="${cfgData.display}"]`).click();
+                }
+                if (cfgData.cpu) {
+                    document.querySelector(`.cpu-card[data-cpu="${cfgData.cpu}"]`).click();
+                }
+                if (cfgData.ram) {
+                    document.querySelector(`.ram-card[data-ram="${cfgData.ram}"]`).click();
+                }
+                if (cfgData.storage) {
+                    document.querySelector(`.storage-card[data-storage="${cfgData.storage}"]`).click();
+                }
+                if (cfgData.battery) {
+                    document.querySelector(`.battery-card[data-battery="${cfgData.battery}"]`).click();
+                }
+                if (cfgData.adapter) {
+                    document.querySelector(`.adapter-card[data-adapter="${cfgData.adapter}"]`).click();
+                }
+                for (let slot in cfgData.ports) {
+                    config[slot] = cfgData.ports[slot];
+                    const slotEl = document.querySelector(`.port-slot[data-slot="${slot}"]`);
+                    slotEl.classList.add('occupied');
+                    slotEl.querySelector('.comp-lb').textContent = comps[cfgData.ports[slot]].label;
+                }
+                updStats();
+                updStatus('config imported');
+            } catch (err) {
+                alert('error importing: ' + err.message);
+                console.log('uh oh error importing: ' + err.message);
+            }
+        };
+        reader.readAsText(file);
+    }
+});
 
 function clearCfg() {
     document.querySelectorAll('.comp-card').forEach(c => c.classList.remove('selected'));

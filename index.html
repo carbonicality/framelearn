@@ -298,6 +298,18 @@
                     <canvas id="tcanvas"></canvas> <!-- or tmoble?!?!?! (cough cough)-->
                 </div>
             </div>
+            <div class="pg-cont">
+                <div class="pg-header">
+                    <span class="gtitle">power draw monitor</span>
+                    <span class="gcurrent" id="gcurrent">0W</span>
+                </div>
+                <canvas id="pgraph"></canvas>
+                <div class="pg-legend">
+                    <span class="legitem safe">SAFE (&lt;40W)</span>
+                    <span class="legitem moderate">MODERATOR (40-80W)</span>
+                    <span class="legitem high">HIGH (&gt;80W)</span>
+                </div>
+            </div>
         </div>
         <script src="./script.js"></script>
     </body>
