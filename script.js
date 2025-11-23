@@ -44,6 +44,30 @@ const presets = {
     }
 }
 
+const benchmarks = {
+    cpu: {
+        '1': {singleCore:1850,multiCore:12400,name:'cpu 1'},
+        '2': {singleCore:2100,multiCore:9800,name:'cpu 2'}
+    },
+    storage: {
+        '0': {sequential:3250,random:280,name:'256GB'},
+        '1': {sequential:4700,random:450,name:'512GB'}
+    },
+    ram: {
+        '0': {score:3200,name:'8GB'},
+        '1': {score:4480,name:'16GB'}
+    }
+}
+
+const usageSc = {
+    idle: {name:'idle', multiplier:0.3},
+    light: {name:'light use',multiplier:0.6},
+    medium: {name:'medium use',multiplier:1.0},
+    heavy: {name:'heavy use', multiplier:1.4}
+}
+
+let currentSc = 'medium';
+
 let selComp = null;
 let config = {};
 let selDisplay = null;
@@ -215,6 +239,98 @@ document.getElementById('sum-btn').addEventListener('click', function() {
     showSum();
 });
 
+function updBench() {
+    let cpuSingle = 0, cpuMulti = 0, storageSeq = 0, storageRand = 0, memScore = 0;
+    if (selCpu) {
+        cpuSingle = benchmarks.cpu[selCpu].singleCore;
+        cpuMulti = benchmarks.cpu[selCpu].multiCore;
+    }
+    if (selStorage) {
+        storageSeq = benchmarks.storage[selStorage].sequential;
+        storageRand = benchmarks.storage[selStorage].random;
+    }
+    if (selRam) {
+        memScore = benchmarks.ram[selRam].score;
+    }
+    const overall = Math.round((cpuMulti * 0.35 + cpuSingle * 0.25 + storageSeq * 0.2 + memScore * 0.15 + storageRand * 0.05) / 10);
+    document.getElementById('b-cpu-single').textContent = cpuSingle || 'N/A';
+    document.getElementById('b-cpu-multi').textContent = cpuMulti || 'N/A';
+    document.getElementById('b-storage').textContent = storageSeq ? storageSeq + ' MB/s' : 'N/A';
+    document.getElementById('b-memory').textContent = memScore || 'N/A';
+    document.getElementById('b-overall').textContent = overall || 'N/A';
+
+    updatePB('perf-cpu', cpuSingle, 2500);
+    updatePB('perf-stg', storageSeq, 7000);
+    updatePB('perf-mem', memScore, 6000);
+    updatePB('perf-overall', overall, 1500);
+}
+
+function updatePB(id, value, max) {
+    const bar = document.getElementById(id);
+    if (!bar) return;
+    const percent = Math.min((value / max) * 100, 100);
+    bar.style.width = percent + '%';
+    if (percent > 75) {
+        bar.style.background = '#00ff00';
+        bar.style.boxShadow = '0 0 10px #00ff00';
+    } else if (percent > 50) {
+        bar.style.background = '#ffaa00';
+        bar.style.boxShadow = '0 0 10px #ffaa00';
+    } else {
+        bar.style.background = '#ff4444';
+        bar.style.boxShadow = '0 0 10px #ff4444';
+    }
+}
+
+function updBattLife() {
+    if (!selBatt) {
+        document.querySelectorAll('.batt-sc').forEach(el => {
+            el.textContent = 'N/A';
+        });
+        document.getElementById('batt-cur').textContent = 'N/A';
+        return;
+    }
+
+    let totalPwr = 0;
+    if (selDisplay) totalPwr += displays[selDisplay].power;
+    if (selCpu) totalPwr += cpus[selCpu].tdp;
+    if (selRam) totalPwr += rams[selRam].power;
+    if (selStorage) totalPwr += storages[selStorage].power;
+    for (let slot in config) {
+        totalPwr += comps[config[slot]].power;
+    }
+    const battCap = batts[selBatt].capacity;
+    for (let sc in usageSc) {
+        const adjPwr = totalPwr * usageSc[sc].multiplier;
+        const hours = adjPwr > 0 ? battCap/adjPwr : 0;
+        const el = document.getElementById('batt-' + sc);
+        if (el) {
+            el.textContent = hours > 0 ? hours.toFixed(1) + 'h' : 'N/A';
+        }
+    }
+    const medEl = document.getElementById('batt-med');
+    if (medEl) {
+        const adjPwr = totalPwr * usageSc.medium.multiplier;
+        const hours = adjPwr > 0 ? battCap / adjPwr : 0;
+        medEl.textContent = hours > 0 ? hours.toFixed(1) + 'h' : 'N/A';
+    }
+    const selectedPwr = totalPwr * usageSc[currentSc].multiplier;
+    const selHrs = selectedPwr > 0 ? battCap / selPwr : 0;
+    document.getElementById('batt-cur').textContent = selHrs > 0 ? selHrs.toFixed(1) + 'hours' : 'N/A';
+}
+
+document.querySelectorAll('.sc-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.sc-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        currentSc = this.dataset.sc;
+        updateBattLife();
+    });
+});
+
+window.updBench = updBench;
+window.updBattLife = updBattLife;
+
 function showSum() {
     const sumMdl = document.getElementById('conf-sum');
     const sumBody = document.getElementById('sum-body'); // dawg this isnt even pun intended by SUM-BODY HAHAHAHAHAHAHAHAH
@@ -227,7 +343,7 @@ function showSum() {
     }
     if (selCpu) {
         const c= cpus[selCpu];
-        html += `<div class="sum-item"><span>cpu:</span><span>${c.name} - ${c.cost}</span><div>`;
+        html += `<div class="sum-item"><span>cpu:</span><span>${c.name} - $${c.cost}</span></div>`;
         totalCost += c.cost;
     }
     if (selRam) {
@@ -247,7 +363,7 @@ function showSum() {
     }
     if (selAdpr) {
         const a = adapters[selAdpr];
-        html += `<div class="sum-item"><span>adapter:</span><span>${a.wattage}W - ${a.cost}</span></div>`;
+        html += `<div class="sum-item"><span>adapter:</span><span>${a.wattage}W - $${a.cost}</span></div>`;
         totalCost += a.cost;
     }
     for (let slot in config) {
@@ -255,7 +371,7 @@ function showSum() {
         html += `<div class="sum-item"><span>${slot}:</span><span>${comp.name} - $${comp.cost}</span></div>`;
         totalCost += comp.cost;
     }
-    html += `<div class="sum-item"><span>total:</span></span>$${totalCost}</span></div>`;
+    html += `<div class="sum-item"><span>total:</span><span>$${totalCost}</span></div>`;
     sumBody.innerHTML = html; // lmao this is still so funny to me for no reason lol
     sumMdl.style.display = 'block';
 }
@@ -332,6 +448,9 @@ function updStats() {
     } else if (compatScore < 100) {
         compatEl.classList.add('warning');
     }
+    animPC(totalPwr);
+    updBench();
+    updBattLife();
 }
 
 function updStatus(msg) {
@@ -341,7 +460,7 @@ function updStatus(msg) {
         if (selDisplay && selCpu && Object.keys(config).length > 0) {
             statusEl.textContent= 'system ready';
         } else if (Object.keys(config).length > 0 || selDisplay || selCpu) {
-            statusEl.textContent = 'configurating (actually is it configuring?)';
+            statusEl.textContent = 'configuring';
         } else {
             statusEl.textContent = 'idle';
         }
@@ -442,4 +561,131 @@ function clearCfg() {
     selAdpr = null;
 }
 
+const pgraph = document.getElementById('pgraph');
+if (!pgraph) throw new Error('pgraph not found! uh oh moment.')
+const gctx = pgraph.getContext('2d');
+let pwrHistory = [];
+const maxPts = 50;
+let gAnimFrame = null;
+
+function resizePG() {
+    const rect = pgraph.getBoundingClientRect();
+    pgraph.width = rect.width;
+    pgraph.height  =rect.height;
+}
+
+resizePG();
+window.addEventListener('resize', resizePG);
+
+function drawPG() {
+    const w= pgraph.width;
+    const h = pgraph.height;
+    gctx.fillStyle = '#000';
+    gctx.fillRect(0,0,w,h);
+    gctx.strokeStyle = '#1a1a1a';
+    gctx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) {
+        const y = (h/4) * i;
+        gctx.beginPath();
+        gctx.moveTo(0,y);
+        gctx.lineTo(w,y);
+        gctx.stroke();
+    }
+    for (let i = 0; i <= 10; i++) {
+        const x = (w/10) * i;
+        gctx.beginPath();
+        gctx.moveTo(x,0);
+        gctx.lineTo(x,h);
+        gctx.stroke();
+    }
+    const t40 = h - (h * (40/120));
+    const t80 = h - (h * (80/120));
+    //green (0-40)
+    gctx.fillStyle = 'rgba(0,255,0,0.05)';
+    gctx.fillRect(0,t40,w,h - t40);
+    //yellow (40-80)
+    gctx.fillStyle = 'rgba(255,170,0,0.05)';
+    gctx.fillRect(0,t80,w,t40 - t80);
+    //red (80 and above)
+    gctx.fillStyle = 'rgba(255,68,68,0.05)';
+    gctx.fillRect(0,0,w,t80);
+    if (pwrHistory.length > 1) {
+        gctx.beginPath();
+        gctx.lineWidth = 2;
+        const spacing = w / (maxPts - 1);
+        for (let i = 0;i < pwrHistory.length; i++) {
+            const x = i * spacing;
+            const pwr = pwrHistory[i];
+            const y = h - (h * (pwr / 120));
+            if (pwr > 80) {
+                gctx.strokeStyle = '#ff4444';
+            } else if (pwr > 40) {
+                gctx.strokeStyle = '#ffaa00';
+            } else {
+                gctx.strokeStyle = '#00ff00';
+            }
+            if (i === 0) {
+                gctx.moveTo(x,y);
+            } else {
+                gctx.lineTo(x,y);
+            }
+        }
+        gctx.stroke();
+        gctx.shadowBlur = 10;
+        gctx.shadowColor = gctx.strokeStyle;
+        gctx.stroke();
+        gctx.shadowBlur = 0;
+        
+        gctx.fillStyle = '#00ffff';
+        for (let i = 0; i < pwrHistory.length; i++) {
+            const x = i * spacing;
+            const pwr = pwrHistory[i];
+            const y = h - (h * (pwr / 120));
+            gctx.beginPath();
+            gctx.arc(x,y,2,0,Math.PI * 2);
+            gctx.fill();
+        }
+    }
+    if (pwrHistory.length > 0) {
+        const currPwr = pwrHistory[pwrHistory.length - 1];
+        const x = w - 60;
+        const y = h - (h * (currPwr/120));
+        gctx.fillStyle = 'rgba(0,0,0,0.7)';
+        gctx.fillRect(x - 5, y - 15, 60,20);
+        gctx.fillStyle = '#00ffff';
+        gctx.font = '12px Geist Mono';
+        gctx.fillText(currPwr.toFixed(1) + 'W',x,y);
+    }
+}
+
+function addPR(watts) {
+    pwrHistory.push(watts);
+    if (pwrHistory.length > maxPts) {
+        pwrHistory.shift();
+    }
+    document.getElementById('gcurrent').textContent = watts.toFixed(1) + 'W';
+    drawPG();
+}
+
+function animPC(targetPwr) {
+    if (gAnimFrame) {
+        cancelAnimationFrame(gAnimFrame);
+    }
+    const startPwr = pwrHistory.length > 0 ? pwrHistory[pwrHistory.length - 1] : 0;
+    const duration = 500; // (ms)
+    const startTime = Date.now();
+    function animate() {
+        const elapsed = Date.now() - startTime;
+        const progress=Math.min(elapsed / duration,1);
+        const easeProg = 1 - Math.pow(1 - progress,3);
+        const currPwr = startPwr + (targetPwr - startPwr) * easeProg;
+        addPR(currPwr);
+        if (progress < 1) {
+            gAnimFrame = requestAnimationFrame(animate);
+        }
+    }
+    animate();
+}
+
+addPR(0);
 updStats();

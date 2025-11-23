@@ -551,3 +551,167 @@ h1 {
 .legitem.high::before {
     background: #ff4444;
 }
+
+.b-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.b-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background: #0f0f0f;
+    border: 1px solid #333;
+    border-radius: 3px;
+    font-size: 10px;
+}
+
+.b-item.overall {
+    grid-column: 1 / -1;
+    background: #1a1a1a;
+    border-color: #00ffff;
+}
+
+.b-label {
+    color: #888;
+}
+
+.b-value {
+    color: #00ffff;
+    font-weight: 600;
+}
+
+.perf-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.perf-bc {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.perf-label {
+    font-size: 10px;
+    color: #888;
+    min-width: 60px;
+}
+
+.perf-bar-bg {
+    flex: 1;
+    height: 12px;
+    background: #0a0a0a;
+    border: 1px solid #333;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.perf-bar {
+    height: 100%;
+    background: #00ffff;
+    transition: width 0.5s ease, background 0.3s ease, box-shadow 0.3s ease; /* no idea why background is in red but idk it should work anyway */
+    width: 0%;
+}
+
+.battery-sc {
+    margin-bottom: 20px;
+}
+
+.sc-selector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.sc-btn {
+    flex: 1;
+    padding: 8px;
+    background: #0f0f0f;
+    border: 1px solid #333;
+    color: #888;
+    font-family: 'Geist Mono';
+    font-size: 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+}
+
+.sc-btn:hover {
+    border-color: #00ffff;
+    color: #00ffff;
+}
+
+.sc-btn.active {
+    background: #1a2a2a;
+    border-color: #00ffff;
+    color: #00ffff;
+}
+
+.batt-cur-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: #0a0a0a;
+    border: 1px solid #00ffff;
+    border-radius: 3px;
+}
+
+.batt-label {
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+}
+
+.batt-time {
+    font-size: 18px;
+    color: #00ffff;
+    font-weight: 600;
+}
+
+.batt-bk {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.battery-sc-itm {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    background: #0f0f0f;
+    border: 1px solid #333;
+    border-radius: 2px;
+    font-size: 10px;
+}
+
+.sc-name {
+    color: #888;
+    text-transform: uppercase;
+}
+
+.batt-sc {
+    color: #00ffff;
+    font-weight: 500;
+}
+
+.thermals {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    right: 30px;
+    bottom: 30px;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+#tcanvas {
+    width: 100%;
+    height: 100%;
+}
