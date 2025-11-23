@@ -315,7 +315,7 @@ function updBattLife() {
         medEl.textContent = hours > 0 ? hours.toFixed(1) + 'h' : 'N/A';
     }
     const selectedPwr = totalPwr * usageSc[currentSc].multiplier;
-    const selHrs = selectedPwr > 0 ? battCap / selPwr : 0;
+    const selHrs = selectedPwr > 0 ? battCap / selectedPwr : 0;
     document.getElementById('batt-cur').textContent = selHrs > 0 ? selHrs.toFixed(1) + 'hours' : 'N/A';
 }
 
@@ -323,8 +323,8 @@ document.querySelectorAll('.sc-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         document.querySelectorAll('.sc-btn').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
-        currentSc = this.dataset.sc;
-        updateBattLife();
+        currentSc = this.dataset.scenario;
+        updBattLife();
     });
 });
 
